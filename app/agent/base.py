@@ -1,3 +1,4 @@
+import asyncio
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from typing import List, Literal, Optional
@@ -110,11 +111,14 @@ class BaseAgent(BaseModel, ABC):
         msg = msg_factory(content, **kwargs) if role == "tool" else msg_factory(content)
         self.memory.add_message(msg)
 
-    async def run(self, request: Optional[str] = None) -> str:
+    async def run(
+        self, request: Optional[str] = None, cancel_event: asyncio.Event = None
+    ) -> str:
         """Execute the agent's main loop asynchronously.
 
         Args:
             request: Optional initial user request to process.
+            cancel_event: Optional asyncio event to signal cancellation.
 
         Returns:
             A string summarizing the execution results.
@@ -133,6 +137,10 @@ class BaseAgent(BaseModel, ABC):
             while (
                 self.current_step < self.max_steps and self.state != AgentState.FINISHED
             ):
+                # Check for cancellation
+                if cancel_event and cancel_event.is_set():
+                    return "操作已被取消"
+
                 self.current_step += 1
                 logger.info(f"Executing step {self.current_step}/{self.max_steps}")
                 step_result = await self.step()

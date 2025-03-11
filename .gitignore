@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+config/config.toml
 # Distribution / packaging
 .Python
 build/
@@ -128,7 +128,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -178,3 +177,7 @@ data/
 
 # Workspace
 workspace/
+
+config/config.toml
+config.bat
+node_modules
