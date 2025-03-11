@@ -15,6 +15,16 @@ temperature = 0.0
 # temperature = 0.0
 # api_version="AZURE API VERSION" #"2024-08-01-preview"
 
+# LM Studio local API configuration
+# [llm.lmstudio]
+# api_type = "lmstudio"
+# model = "YOUR_LOCAL_MODEL_NAME"
+# base_url = "http://localhost:1234/v1"  # Default LM Studio URL
+# api_key = "sk-no-key-required"  # LM Studio requires a fake key with "sk-" prefix
+# max_tokens = 4096
+# temperature = 0.7
+# api_version = ""  # Not used for LM Studio
+
 # Optional configuration for specific LLM models
 [llm.vision]
 model = "claude-3-5-sonnet"
