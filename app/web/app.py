@@ -652,8 +652,19 @@ async def process_prompt(session_id: str, prompt: str):
 
             # 初始化代理和任务流程
             ThinkingTracker.add_thinking_step(session_id, "初始化AI代理和任务流程")
-            agent = Manus()
-
+            
+            # 检查是否指定了LLM配置
+            llm_config = os.environ.get("LLM_CONFIG")
+            if llm_config:
+                from app.llm import LLM
+                llm = LLM(config_name=llm_config)
+                agent = Manus()
+                agent.llm = llm
+                ThinkingTracker.add_thinking_step(session_id, f"使用LLM配置: {llm_config}")
+                log.info(f"使用LLM配置: {llm_config}, 模型: {llm.model}")
+            else:
+                agent = Manus()
+            
             # 使用包装器包装LLM
             if hasattr(agent, "llm"):
                 original_llm = agent.llm

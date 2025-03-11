@@ -40,13 +40,23 @@ class LLM:
             self.api_key = llm_config.api_key
             self.api_version = llm_config.api_version
             self.base_url = llm_config.base_url
+            
             if self.api_type == "azure":
                 self.client = AsyncAzureOpenAI(
                     base_url=self.base_url,
                     api_key=self.api_key,
                     api_version=self.api_version,
                 )
+            elif self.api_type == "lmstudio":
+                # LM Studio uses the OpenAI-compatible API but doesn't require an API key
+                # and typically runs on localhost with a specific port
+                self.client = AsyncOpenAI(
+                    api_key="sk-no-key-required",  # LM Studio requires a fake key with "sk-" prefix
+                    base_url=self.base_url or "http://localhost:1234/v1",  # Default LM Studio URL
+                )
+                logger.info(f"Initialized LM Studio client with base URL: {self.base_url}")
             else:
+                # Default OpenAI client
                 self.client = AsyncOpenAI(api_key=self.api_key, base_url=self.base_url)
 
     @staticmethod
